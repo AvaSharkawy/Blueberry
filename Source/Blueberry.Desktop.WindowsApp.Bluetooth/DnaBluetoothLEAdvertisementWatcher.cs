@@ -161,34 +161,36 @@ namespace Blueberry.Desktop.WindowsApp.Bluetooth
             // Is new discovery?
             var newDiscovery = false;
             var existingName = default(string);
+			var nameChanged = false;
 
-            // Lock your doors
-            lock (mThreadLock)
-            {
-                // Check if this is a new discovery
-                newDiscovery = !mDiscoveredDevices.ContainsKey(device.DeviceId);
+			// Lock your doors
+			lock (mThreadLock)
+			{
+				// Check if this is a new discovery
+				newDiscovery = !mDiscoveredDevices.ContainsKey(device.DeviceId);
 
-                // If this is not new...
-                if (!newDiscovery)
-                    // Store the old name
-                    existingName = mDiscoveredDevices[device.DeviceId].Name;
-            }
+				// If this is not new...
+				if (!newDiscovery)
+					// Store the old name
+					existingName = mDiscoveredDevices[device.DeviceId].Name;
 
-            // Name changed?
-            var nameChanged =
-                // If it already exists
-                !newDiscovery &&
-                // And is not a blank name
-                !string.IsNullOrEmpty(args.Advertisement.LocalName) &&
-                // And the name is different
-                existingName != device.Name;
+				// Name changed?
+				nameChanged =
+					// If it already exists
+					!newDiscovery &&
+					// And is not a blank name
+					!string.IsNullOrEmpty(args.Advertisement.LocalName) &&
+					// And the name is different
+					existingName != device.Name;
 
+				// If we are no longer listening...
+				if (!Listening)
+					// Don't bother adding to the list and do nothing
+					return;
 
-            lock (mThreadLock)
-            {
-                // Add/update the device in the dictionary
-                mDiscoveredDevices[device.DeviceId] = device;
-            }
+				// Add/update the device in the dictionary
+				mDiscoveredDevices[device.DeviceId] = device;
+			}
 
             // Inform listeners
             DeviceDiscovered(device);
