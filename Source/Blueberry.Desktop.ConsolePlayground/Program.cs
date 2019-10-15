@@ -5,7 +5,7 @@ namespace Blueberry.Desktop.ConsolePlayground
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("Hello World!");
 
@@ -60,9 +60,6 @@ namespace Blueberry.Desktop.ConsolePlayground
                 foreach (var device in devices)
                     Console.WriteLine(device);
             }
-
-            // Don't close
-            Console.ReadLine();
         }
     }
 }
